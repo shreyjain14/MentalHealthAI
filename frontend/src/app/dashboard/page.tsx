@@ -63,7 +63,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Profile Card */}
           <div className="bg-surface rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold text-white mb-4">
@@ -76,43 +76,29 @@ export default function DashboardPage() {
             <div className="mt-4">
               <Link
                 href="/profile"
-                className="inline-block w-full px-4 py-2 bg-primary text-white text-center rounded-md hover:bg-primary-dark transition-colors"
+                className="inline-block w-full px-4 py-2 bg-pink-600 text-white text-center rounded-md hover:bg-pink-700 transition-colors"
               >
                 Go to Profile
               </Link>
             </div>
           </div>
 
-          {/* Mood Tracker Card */}
+          {/* Chat Bot Card */}
           <div className="bg-surface rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold text-white mb-4">
-              Mood Tracker
+              AI Therapy Chat
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              How are you feeling today? Track your mood to identify patterns.
+              Talk to our AI therapist about your feelings and get personalized
+              support and guidance.
             </p>
             <div className="mt-4">
-              <button
-                className="w-full px-4 py-2 bg-primary text-white text-center rounded-md hover:bg-primary-dark transition-colors"
-                onClick={() => setShowMoodPopup(true)}
+              <Link
+                href="/chat"
+                className="inline-block w-full px-4 py-2 bg-pink-600 text-white text-center rounded-md hover:bg-pink-700 transition-colors"
               >
-                Track Mood
-              </button>
-            </div>
-          </div>
-
-          {/* Resources Card */}
-          <div className="bg-surface rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-white mb-4">
-              Mental Health Tips
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              Explore resources and tips to help improve your mental wellbeing.
-            </p>
-            <div className="mt-4">
-              <button className="w-full px-4 py-2 bg-primary text-white text-center rounded-md hover:bg-primary-dark transition-colors">
-                View Resources
-              </button>
+                Start Chatting
+              </Link>
             </div>
           </div>
         </div>

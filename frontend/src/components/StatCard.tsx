@@ -10,9 +10,9 @@ interface StatCardProps {
 
 const colorVariants = {
   primary: {
-    bg: "bg-primary bg-opacity-20",
-    text: "text-primary",
-    icon: "text-primary",
+    bg: "bg-pink-600 bg-opacity-20",
+    text: "text-pink-600",
+    icon: "text-pink-600",
   },
   secondary: {
     bg: "bg-gray-700",

@@ -63,11 +63,11 @@ const MoodPopup: React.FC<MoodPopupProps> = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-darkMode-surface rounded-lg p-6 max-w-md w-full">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+      <div className="bg-black rounded-lg p-6 max-w-md w-full border border-gray-700">
+        <h2 className="text-2xl font-bold text-white mb-4">
           How are you feeling today?
         </h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
+        <p className="text-gray-300 mb-6">
           Tracking your mood helps you understand your emotional patterns.
         </p>
 
@@ -78,12 +78,12 @@ const MoodPopup: React.FC<MoodPopupProps> = ({ onClose }) => {
               onClick={() => handleMoodSelect(mood.value)}
               className={`flex flex-col items-center p-3 rounded-lg transition-colors ${
                 selectedMood === mood.value
-                  ? "bg-primary text-white"
-                  : "bg-gray-100 dark:bg-darkMode-background hover:bg-gray-200 dark:hover:bg-darkMode-secondary"
+                  ? "bg-pink-600 text-white"
+                  : "bg-gray-800 text-white hover:bg-gray-700"
               }`}
             >
               <span className="text-2xl mb-1">{mood.emoji}</span>
-              <span className="text-sm">{mood.label}</span>
+              <span className="text-sm font-medium">{mood.label}</span>
             </button>
           ))}
         </div>
@@ -91,7 +91,7 @@ const MoodPopup: React.FC<MoodPopupProps> = ({ onClose }) => {
         <div className="flex justify-end space-x-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+            className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
           >
             Skip
           </button>
@@ -100,8 +100,8 @@ const MoodPopup: React.FC<MoodPopupProps> = ({ onClose }) => {
             disabled={!selectedMood || isSubmitting}
             className={`px-4 py-2 rounded-md ${
               !selectedMood || isSubmitting
-                ? "bg-gray-300 dark:bg-gray-700 cursor-not-allowed"
-                : "bg-primary hover:bg-primary-dark text-white"
+                ? "bg-pink-300 bg-opacity-30 text-pink-200 cursor-not-allowed"
+                : "bg-pink-600 hover:bg-pink-700 text-white"
             }`}
           >
             {isSubmitting ? (

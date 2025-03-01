@@ -9,7 +9,7 @@
   --background: #121212;
   --foreground: #FFFFFF;
   --primary: #C2185B;
-  --primary-light: #EC407A;
+  --primary-light: #E91E63;
   --primary-dark: #AD1457;
   --secondary: #1E1E1E;
   --secondary-light: #2D2D2D;
@@ -24,7 +24,7 @@ body {
 }
 
 .btn-primary {
-  background-color: var(--primary);
+  background-color: #C2185B; /* Dark pink */
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
@@ -33,7 +33,7 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: var(--primary-dark);
+  background-color: #AD1457; /* Even darker pink */
 }
 
 .input-field {
@@ -46,7 +46,7 @@ body {
 }
 
 .input-field:focus {
-  outline: 2px solid var(--primary-light);
+  outline: 2px solid var(--primary);
   border-color: var(--primary);
 }
 
@@ -54,5 +54,5 @@ body {
   background-color: var(--secondary);
   border-radius: 0.5rem;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(65, 64, 64, 0.1);
 }
