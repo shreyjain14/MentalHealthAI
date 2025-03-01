@@ -86,7 +86,7 @@ export default function HomePage() {
         </section>
 
         {/* Statistics Section */}
-        <section className="py-12 bg-primary bg-opacity-30">
+        {/* <section className="py-12 bg-primary bg-opacity-30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-extrabold text-white">
@@ -104,7 +104,7 @@ export default function HomePage() {
             ) : (
               <>
                 {/* Total Visitors Stat */}
-                <div className="max-w-md mx-auto">
+        {/* <div className="max-w-md mx-auto">
                   <StatCard
                     title="Total Visits"
                     value={stats?.total_count || 0}
@@ -129,7 +129,7 @@ export default function HomePage() {
               </>
             )}
           </div>
-        </section>
+        </section> */}
       </main>
 
       {/* Footer */}

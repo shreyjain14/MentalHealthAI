@@ -33,7 +33,6 @@ export default function ChatPage() {
   const [inputMessage, setInputMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState("Disconnecting...");
-  const [debugInfo, setDebugInfo] = useState<string>("");
 
   // Streaming message state
   const [activeMessageId, setActiveMessageId] = useState<number | null>(null);
@@ -51,7 +50,7 @@ export default function ChatPage() {
   const parseThinkingContent = (content: string) => {
     const parts = [];
     // Replace 's' flag with a workaround that works in ES2015
-    const regex = /<thinking>([\s\S]*?)<\/thinking>/g;
+    const regex = /<think>([\s\S]*?)<\/think>/g;
     let lastIndex = 0;
     let match;
 
@@ -84,12 +83,10 @@ export default function ChatPage() {
     // Reset streaming state before connecting
     accumulatedTextRef.current = {};
     setActiveMessageId(null);
-    setDebugInfo("Connecting to WebSocket...");
 
     const token = getAccessToken();
     if (!token) {
       console.error("No access token found");
-      setDebugInfo("Error: No access token found");
       return;
     }
 
@@ -103,14 +100,12 @@ export default function ChatPage() {
         console.log("WebSocket connection established");
         setIsConnected(true);
         setConnectionStatus("Connected");
-        setDebugInfo("WebSocket connected successfully");
       };
 
       socketRef.current.onmessage = (event) => {
         try {
           const timestamp = new Date().toISOString();
           console.log(`[${timestamp}] Received message:`, event.data);
-          setDebugInfo(`Received message at ${timestamp.split("T")[1]}`);
 
           const data = JSON.parse(event.data) as StreamingChunk;
 
@@ -119,7 +114,6 @@ export default function ChatPage() {
           } else if (data.type === "system") {
             // Handle system messages if needed
             console.log("System message:", data);
-            setDebugInfo(`System message: ${data.message || "unknown"}`);
           } else if (data.type === "start") {
             // Handle start of a new message
             console.log(`Starting message ${data.message_id}`);
@@ -130,11 +124,9 @@ export default function ChatPage() {
             finalizeMessage(data.message_id);
           } else if (data.error) {
             console.error("Error from server:", data.error);
-            setDebugInfo(`Error from server: ${data.error}`);
           }
         } catch (error) {
           console.error("Error parsing message:", error);
-          setDebugInfo(`Error parsing message: ${error}`);
         }
       };
 
@@ -151,7 +143,6 @@ export default function ChatPage() {
     } catch (error) {
       console.error("Failed to connect to WebSocket:", error);
       setConnectionStatus("Connection Failed");
-      setDebugInfo(`Connection failed: ${error}`);
     }
   };
 
@@ -167,7 +158,6 @@ export default function ChatPage() {
     setMessages((prev) => [...prev, newMessage]);
     setActiveMessageId(messageId);
     accumulatedTextRef.current[messageId] = "";
-    setDebugInfo(`Starting new message stream: ${messageId}`);
   };
 
   // Handle incoming chunks
@@ -182,14 +172,17 @@ export default function ChatPage() {
           // Update content
           const newContent = msg.content + chunk;
 
-          // Check if we need to update expandedThinking array
+          // Check for think tags in the accumulated content
           const parts = parseThinkingContent(newContent);
           const thinkingCount = parts.filter(
             (p) => p.type === "thinking"
           ).length;
 
           // Ensure expandedThinking array has correct length with all false values
-          let expandedThinking = msg.expandedThinking || [];
+          // This ensures thinking sections are collapsed by default
+          let expandedThinking = [...(msg.expandedThinking || [])];
+
+          // If we have more thinking sections than before, add new collapsed (false) entries
           if (expandedThinking.length < thinkingCount) {
             expandedThinking = [
               ...expandedThinking,
@@ -197,6 +190,7 @@ export default function ChatPage() {
             ];
           }
 
+          // Store the updated content and expandedThinking state
           return {
             ...msg,
             content: newContent,
@@ -213,16 +207,40 @@ export default function ChatPage() {
 
   // Finalize a message when streaming is complete
   const finalizeMessage = (messageId: number) => {
-    if (accumulatedTextRef.current[messageId]) {
-      const content = accumulatedTextRef.current[messageId];
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === `ai-${messageId}`
-            ? { ...msg, content, isStreaming: false }
-            : msg
-        )
-      );
+    setMessages((prev) =>
+      prev.map((msg) => {
+        if (msg.id === `ai-${messageId}`) {
+          // Get the final content
+          const content = msg.content;
 
+          // Final check for thinking tags to ensure they are properly collapsed
+          const parts = parseThinkingContent(content);
+          const thinkingCount = parts.filter(
+            (p) => p.type === "thinking"
+          ).length;
+
+          // Ensure expandedThinking array is properly set up
+          let expandedThinking = [...(msg.expandedThinking || [])];
+          if (expandedThinking.length < thinkingCount) {
+            expandedThinking = [
+              ...expandedThinking,
+              ...Array(thinkingCount - expandedThinking.length).fill(false),
+            ];
+          }
+
+          return {
+            ...msg,
+            content,
+            expandedThinking,
+            isStreaming: false,
+          };
+        }
+        return msg;
+      })
+    );
+
+    // Clean up accumulated text
+    if (accumulatedTextRef.current[messageId]) {
       delete accumulatedTextRef.current[messageId];
     }
   };
@@ -302,7 +320,7 @@ export default function ChatPage() {
       <Navbar />
 
       <div className="flex-1 p-4 max-w-4xl mx-auto w-full flex flex-col">
-        {/* Connection Status and Debug Info */}
+        {/* Connection Status */}
         <div
           className={`mb-4 px-4 py-2 rounded-md text-sm ${
             isConnected
@@ -321,11 +339,6 @@ export default function ChatPage() {
               </button>
             )}
           </div>
-          {debugInfo && (
-            <div className="mt-1 text-xs text-gray-300 opacity-80 font-mono truncate">
-              {debugInfo}
-            </div>
-          )}
         </div>
 
         {/* Chat Messages */}
@@ -355,6 +368,7 @@ export default function ChatPage() {
                         return <span key={index}>{part.content}</span>;
                       }
 
+                      // This is a thinking part - it should be collapsed by default
                       const isExpanded =
                         message.expandedThinking?.[index] ?? false;
 
@@ -379,7 +393,7 @@ export default function ChatPage() {
                             {isExpanded ? "−" : "+"} Thinking
                           </button>
                           {isExpanded && (
-                            <div className="ml-4 text-gray-400 text-sm bg-gray-900 p-2 rounded mt-1 border border-gray-700">
+                            <div className="ml-4 text-gray-400 text-sm bg-gray-900 p-2 rounded mt-1 border border-gray-700 max-h-96 overflow-y-auto">
                               {part.content}
                             </div>
                           )}
@@ -388,7 +402,15 @@ export default function ChatPage() {
                     })
                   ) : (
                     <>
-                      {message.content}
+                      {message.sender === "ai"
+                        ? // For AI messages, always parse and filter out thinking tags
+                          parseThinkingContent(message.content)
+                            .filter((part) => part.type === "text")
+                            .map((part, index) => (
+                              <span key={index}>{part.content}</span>
+                            ))
+                        : // For user messages, display content as is
+                          message.content}
                       {message.isStreaming && (
                         <span className="inline-block ml-1 animate-pulse">
                           ▌
