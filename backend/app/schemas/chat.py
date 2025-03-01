@@ -1,12 +1,12 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 
 class ChatMessageBase(BaseModel):
     message: str
 
 class ChatMessageCreate(ChatMessageBase):
-    pass
+    message_metadata: Optional[Dict[str, Any]] = None
 
 class ChatResponse(BaseModel):
     response: str
@@ -15,6 +15,7 @@ class ChatMessage(ChatMessageBase):
     id: int
     user_id: int
     response: Optional[str] = None
+    message_metadata: Optional[Dict[str, Any]] = None
     created_at: datetime
     
     model_config = {"from_attributes": True}
@@ -24,7 +25,6 @@ class ChatHistory(BaseModel):
 
 class WebSocketChatRequest(BaseModel):
     message: str
-    system_prompt: Optional[str] = None
     temperature: Optional[float] = None
     top_p: Optional[float] = None
     max_tokens: Optional[int] = None 
