@@ -9,10 +9,13 @@ load_dotenv()
 
 # Configuration
 OLLAMA_API_URL = os.getenv("OLLAMA_API_URL", "http://localhost:11434")
-DEFAULT_MODEL = "deepseek-r1:8b"
-DEFAULT_TEMPERATURE = 0.7
 DEFAULT_TOP_P = 0.9
 DEFAULT_MAX_TOKENS = 1000
+
+# Thinking models all the <think> tags will be automatically collapsed
+# DEFAULT_MODEL = "deepseek-r1:8b"
+DEFAULT_MODEL = "llama3.1"
+DEFAULT_TEMPERATURE = 0.7
 
 class OllamaService:
     """Service for interacting with Ollama models"""

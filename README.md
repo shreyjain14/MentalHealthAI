@@ -1,6 +1,6 @@
 # Fullstack Application
 
-This repository contains a fullstack application with a FastAPI backend and a Next.js frontend. The backend uses Ollama's deepseek-r1:8b model for AI capabilities.
+This repository contains a fullstack application with a FastAPI backend and a Next.js frontend. The backend uses Ollama's llama3.1 8b (or any other model can be changed [here](backend/app/services/ollama.py)) model for AI capabilities.
 
 ## Project Structure
 
@@ -19,10 +19,10 @@ This repository contains a fullstack application with a FastAPI backend and a Ne
 
 ## Prerequisites
 
-- [Ollama](https://ollama.ai/download) (for local development)
-- [Python](https://www.python.org/downloads/) 3.9+ (for local development)
-- [Node.js](https://nodejs.org/) 18+ (for local development)
-- [PostgreSQL](https://www.postgresql.org/download/) (for local development)
+- [Ollama](https://ollama.ai/download)
+- [Python](https://www.python.org/downloads/) 3.9+
+- [Node.js](https://nodejs.org/) 18+
+- [PostgreSQL](https://www.postgresql.org/download/)
 
 ## Environment Variables
 
