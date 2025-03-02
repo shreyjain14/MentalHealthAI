@@ -22,4 +22,11 @@ class MoodHistoryResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 class MoodHistoryList(BaseModel):
-    history: List[MoodHistoryResponse] 
+    history: List[MoodHistoryResponse]
+
+class MoodForecast(BaseModel):
+    twelve_hours: dict
+    twenty_four_hours: dict
+    next_week: dict
+    
+    model_config = {"from_attributes": True} 

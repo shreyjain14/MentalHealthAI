@@ -130,7 +130,7 @@ export default function Navbar() {
                         : "border-transparent text-gray-300 hover:border-gray-300 hover:text-white"
                     } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200`}
                   >
-                    Mood History
+                    Mood
                   </Link>
                   <Link
                     href="/resources"

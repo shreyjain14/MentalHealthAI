@@ -152,7 +152,7 @@ class GeminiService:
         )
         
         # Use the gemini-pro model
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel('gemini-2.0-flash')
         
         generation_config = {
             "temperature": 0.8,  # Slightly higher temperature for more diverse suggestions
@@ -312,6 +312,111 @@ class GeminiService:
         except Exception as e:
             logger.error(f"Error generating relaxation exercises: {str(e)}")
             return []
+
+    async def generate_mood_forecast(
+        self,
+        mood_history: List[Dict[str, Any]],
+        current_mood: str
+    ) -> Dict[str, Any]:
+        """
+        Generate mood forecasts using Gemini AI based on user's mood history
+        
+        Args:
+            mood_history: List of past mood entries with mood and timestamp
+            current_mood: User's current mood
+            
+        Returns:
+            Dictionary containing forecasts for different time periods
+        """
+        if not self.api_key:
+            raise ValueError("GEMINI_API_KEY is not set in environment variables")
+            
+        # Construct the prompt
+        prompt = (
+            f"Based on the following mood history and current mood, predict the user's future mood for three time periods: "
+            f"12 hours from now, 24 hours from now, and next week. Current mood: {current_mood}.\n\n"
+            f"Mood history (from most recent to oldest):\n"
+        )
+        
+        # Add mood history to prompt
+        for entry in mood_history:
+            prompt += f"- Mood: {entry['mood']}, Time: {entry['timestamp']}\n"
+            
+        prompt += (
+            "\nAnalyze the patterns and provide mood predictions in JSON format with the following structure:\n"
+            "{\n"
+            '  "twelve_hours": {"predicted_mood": "mood", "confidence": percentage, "reasoning": "short explanation"},\n'
+            '  "twenty_four_hours": {"predicted_mood": "mood", "confidence": percentage, "reasoning": "short explanation"},\n'
+            '  "next_week": {"predicted_mood": "mood", "confidence": percentage, "reasoning": "short explanation"}\n'
+            "}\n\n"
+            "IMPORTANT: Return ONLY the JSON object. Keep all explanations very short and on a single line. "
+            "Do not use line breaks or quotes within the text. Use double quotes for JSON properties and values."
+        )
+        
+        # Use the gemini-pro model
+        model = genai.GenerativeModel('gemini-2.0-flash')
+        
+        generation_config = {
+            "temperature": 0.7,
+            "top_p": 0.95,
+            "top_k": 40,
+            "max_output_tokens": 1024,
+        }
+        
+        try:
+            # Generate content using the async API
+            response = await model.generate_content_async(
+                prompt,
+                generation_config=generation_config
+            )
+            
+            # Extract and parse the response
+            generated_text = response.text
+            
+            # Clean up the text to ensure proper JSON formatting
+            # Replace single quotes with double quotes
+            generated_text = generated_text.replace("'", '"')
+            
+            # Remove any newlines within the text (but keep structural newlines)
+            generated_text = generated_text.replace("\\n", " ")
+            
+            # Remove any escaped quotes
+            generated_text = generated_text.replace('\\"', '"')
+            
+            # Find JSON object in the text
+            json_start = generated_text.find("{")
+            json_end = generated_text.rfind("}") + 1
+            
+            if json_start >= 0 and json_end > json_start:
+                json_text = generated_text[json_start:json_end]
+                
+                # Clean up newlines and spaces
+                import re
+                # Replace newlines and multiple spaces with single spaces within JSON values
+                json_text = re.sub(r':\s*"([^"]*)"', lambda m: ': "' + re.sub(r'\s+', ' ', m.group(1)) + '"', json_text)
+                
+                try:
+                    forecast = json.loads(json_text)
+                    # Validate the required structure
+                    required_keys = ["twelve_hours", "twenty_four_hours", "next_week"]
+                    required_subkeys = ["predicted_mood", "confidence", "reasoning"]
+                    
+                    if all(key in forecast for key in required_keys) and \
+                       all(all(subkey in forecast[key] for subkey in required_subkeys) for key in required_keys):
+                        return forecast
+                    else:
+                        logger.error("Generated forecast missing required keys")
+                        return {}
+                except json.JSONDecodeError as e:
+                    logger.error(f"JSON parsing error: {str(e)}\nText: {json_text}")
+                    return {}
+            else:
+                logger.error(f"Failed to parse JSON from Gemini response for mood forecast: {generated_text}")
+                return {}
+                
+        except Exception as e:
+            logger.error(f"Error generating mood forecast: {str(e)}")
+            return {}
 
 # Create a singleton instance
 gemini_service = GeminiService() 

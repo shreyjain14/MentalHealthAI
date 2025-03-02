@@ -14,6 +14,18 @@ type MoodHistoryResponse = {
   history: MoodEntry[];
 };
 
+interface ForecastPeriod {
+  predicted_mood: string;
+  confidence: number;
+  reasoning: string;
+}
+
+interface MoodForecast {
+  twelve_hours: ForecastPeriod;
+  twenty_four_hours: ForecastPeriod;
+  next_week: ForecastPeriod;
+}
+
 // Map mood values to numeric values for the chart
 const moodValueMap: Record<string, number> = {
   Great: 5,
@@ -29,6 +41,7 @@ export default function MoodHistoryPage() {
   const [error, setError] = useState<string | null>(null);
   const [moodHistory, setMoodHistory] = useState<MoodEntry[]>([]);
   const [timeRange, setTimeRange] = useState<number>(7); // Default to 7 days
+  const [forecast, setForecast] = useState<MoodForecast | null>(null);
 
   // Fetch mood history on component mount
   useEffect(() => {
@@ -38,6 +51,7 @@ export default function MoodHistoryPage() {
     }
 
     fetchMoodHistory(timeRange);
+    fetchMoodForecast();
   }, [router, timeRange]);
 
   const fetchMoodHistory = async (days: number) => {
@@ -70,6 +84,31 @@ export default function MoodHistoryPage() {
       setError("Failed to fetch mood history. Please try again later.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMoodForecast = async () => {
+    try {
+      const token = getAccessToken();
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+
+      const response = await fetch("http://localhost:8000/api/profiles/me/mood-forecast", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch mood forecast");
+      }
+
+      const data = await response.json();
+      setForecast(data);
+    } catch (error) {
+      console.error("Error fetching mood forecast:", error);
     }
   };
 
@@ -160,6 +199,23 @@ export default function MoodHistoryPage() {
     );
   };
 
+  // Get color based on predicted mood
+  const getPredictedMoodColor = (mood: string) => {
+    const moodLower = mood.toLowerCase();
+    if (moodLower.includes("positive") || moodLower === "great") return "text-green-400";
+    if (moodLower.includes("neutral") || moodLower === "okay") return "text-yellow-400";
+    if (moodLower.includes("negative") || moodLower === "bad") return "text-red-400";
+    if (moodLower === "variable") return "text-blue-400";
+    return "text-gray-400";
+  };
+
+  // Get confidence bar color
+  const getConfidenceColor = (confidence: number) => {
+    if (confidence >= 70) return "bg-green-500";
+    if (confidence >= 40) return "bg-yellow-500";
+    return "bg-red-500";
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
@@ -182,6 +238,92 @@ export default function MoodHistoryPage() {
             </select>
           </div>
         </div>
+
+        {/* AI Mood Forecast Section */}
+        {forecast && (
+          <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 mb-6 border border-gray-700/50">
+            <h2 className="text-xl font-bold text-white mb-4">AI Mood Forecast</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* 12 Hours Forecast */}
+              <div className="bg-gray-800/80 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-white mb-2">Next 12 Hours</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Predicted Mood:</span>
+                    <span className={`font-medium ${getPredictedMoodColor(forecast.twelve_hours.predicted_mood)}`}>
+                      {forecast.twelve_hours.predicted_mood}
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-300">Confidence:</span>
+                      <span className="text-gray-300">{forecast.twelve_hours.confidence}%</span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div
+                        className={`${getConfidenceColor(forecast.twelve_hours.confidence)} h-2 rounded-full transition-all duration-300`}
+                        style={{ width: `${forecast.twelve_hours.confidence}%` }}
+                      />
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-400 mt-2">{forecast.twelve_hours.reasoning}</p>
+                </div>
+              </div>
+
+              {/* 24 Hours Forecast */}
+              <div className="bg-gray-800/80 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-white mb-2">Next 24 Hours</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Predicted Mood:</span>
+                    <span className={`font-medium ${getPredictedMoodColor(forecast.twenty_four_hours.predicted_mood)}`}>
+                      {forecast.twenty_four_hours.predicted_mood}
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-300">Confidence:</span>
+                      <span className="text-gray-300">{forecast.twenty_four_hours.confidence}%</span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div
+                        className={`${getConfidenceColor(forecast.twenty_four_hours.confidence)} h-2 rounded-full transition-all duration-300`}
+                        style={{ width: `${forecast.twenty_four_hours.confidence}%` }}
+                      />
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-400 mt-2">{forecast.twenty_four_hours.reasoning}</p>
+                </div>
+              </div>
+
+              {/* Next Week Forecast */}
+              <div className="bg-gray-800/80 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-white mb-2">Next Week</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Predicted Mood:</span>
+                    <span className={`font-medium ${getPredictedMoodColor(forecast.next_week.predicted_mood)}`}>
+                      {forecast.next_week.predicted_mood}
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-300">Confidence:</span>
+                      <span className="text-gray-300">{forecast.next_week.confidence}%</span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div
+                        className={`${getConfidenceColor(forecast.next_week.confidence)} h-2 rounded-full transition-all duration-300`}
+                        style={{ width: `${forecast.next_week.confidence}%` }}
+                      />
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-400 mt-2">{forecast.next_week.reasoning}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="bg-red-900 bg-opacity-20 text-red-300 p-3 rounded-md mb-4">
