@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { isAuthenticated, logoutUser, shouldShowMoodPopup } from "@/utils/auth";
 import Navbar from "@/components/Navbar";
 import MoodPopup from "@/components/MoodPopup";
-import Link from "next/link";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -206,6 +206,26 @@ export default function DashboardPage() {
                 className="inline-block w-full px-4 py-3 bg-pink-400/80 text-white text-center rounded-md hover:bg-pink-500 active:bg-pink-600 transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-pink-500/25"
               >
                 View Resources
+              </Link>
+            </div>
+          </div>
+
+          {/* Virtual Pets Card */}
+          <div className="group bg-gray-800/30 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700/50 hover:border-primary/50 hover:bg-gray-800/50 transition-all duration-300 flex flex-col">
+            <div className="p-6 flex-grow">
+              <h2 className="text-xl font-semibold text-white mb-4 group-hover:text-primary-light transition-colors">
+                Virtual Pets
+              </h2>
+              <p className="text-gray-300">
+                Create and chat with your virtual pets. They're always here to listen and keep you company.
+              </p>
+            </div>
+            <div className="p-6 pt-0">
+              <Link
+                href="/virtual-pets"
+                className="inline-block w-full px-4 py-3 bg-pink-400/80 text-white text-center rounded-md hover:bg-pink-500 active:bg-pink-600 transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-pink-500/25"
+              >
+                Visit Pets
               </Link>
             </div>
           </div>

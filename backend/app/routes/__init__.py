@@ -7,7 +7,7 @@ from app.routes.chat import router as chat_router
 from app.routes.coping import router as coping_router
 from app.routes.relaxation import router as relaxation_router
 from app.routes.resources import router as resources_router
-
+from app.routes.virtual_pets import router as virtual_pets_router
 api_router = APIRouter()
 
 # Import and include other route modules here
@@ -37,3 +37,7 @@ api_router.include_router(relaxation_router, prefix="/relaxation", tags=["relaxa
 
 # Include resource links routes
 api_router.include_router(resources_router, prefix="/resources", tags=["resources"]) 
+
+# Include virtual pet routes
+api_router.include_router(virtual_pets_router, prefix="/virtual-pets", tags=["virtual-pets"])
+

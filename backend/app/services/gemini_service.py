@@ -418,5 +418,79 @@ class GeminiService:
             logger.error(f"Error generating mood forecast: {str(e)}")
             return {}
 
+    async def generate_pet_response(
+        self,
+        animal_type: str,
+        pet_name: str,
+        user_message: str,
+        chat_history: Optional[List[Dict[str, Any]]] = None,
+        user_mood: Optional[str] = None
+    ) -> str:
+        """
+        Generate a response from a virtual support animal
+        
+        Args:
+            animal_type: Type of animal (e.g., "cat", "dog")
+            pet_name: Name of the virtual pet
+            user_message: Current message from the user
+            chat_history: Optional list of previous chat messages
+            user_mood: Optional current mood of the user
+            
+        Returns:
+            Generated response from the pet
+        """
+        if not self.api_key:
+            raise ValueError("GEMINI_API_KEY is not set in environment variables")
+            
+        # Construct the prompt
+        prompt = (
+            f"You are {pet_name}, a supportive and empathetic {animal_type}. "
+            f"Respond to the user's message in a way that's characteristic of a {animal_type}, "
+            f"showing emotional support and understanding. Keep the response concise and natural.\n\n"
+        )
+        
+        if user_mood:
+            prompt += f"The user is currently feeling {user_mood}. "
+        
+        if chat_history:
+            prompt += "Previous conversation:\n"
+            for msg in chat_history[-5:]:  # Only include last 5 messages for context
+                role = "User" if msg["is_user"] else pet_name
+                prompt += f"{role}: {msg['message']}\n"
+        
+        prompt += (
+            f"\nUser: {user_message}\n"
+            f"{pet_name}: "
+        )
+        
+        # Use the gemini-pro model
+        model = genai.GenerativeModel('gemini-2.0-flash')
+        
+        generation_config = {
+            "temperature": 0.8,
+            "top_p": 0.95,
+            "top_k": 40,
+            "max_output_tokens": 150,  # Keep responses relatively short
+        }
+        
+        try:
+            # Generate content using the async API
+            response = await model.generate_content_async(
+                prompt,
+                generation_config=generation_config
+            )
+            
+            # Extract the response
+            pet_response = response.text.strip()
+            
+            # Clean up any potential formatting issues
+            pet_response = pet_response.replace(f"{pet_name}:", "").strip()
+            
+            return pet_response
+                
+        except Exception as e:
+            logger.error(f"Error generating pet response: {str(e)}")
+            return f"*{pet_name} looks at you sympathetically but seems unable to respond right now*"
+
 # Create a singleton instance
 gemini_service = GeminiService() 
