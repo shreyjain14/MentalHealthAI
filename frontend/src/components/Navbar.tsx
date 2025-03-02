@@ -158,6 +158,12 @@ export default function Navbar() {
             </div>
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+            <Link
+              href="/crisis"
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-medium transition-colors duration-200"
+            >
+              Crisis Support
+            </Link>
             {isLoggedIn ? (
               <div className="flex items-center">
                 {/* <span className="text-sm text-gray-300 mr-4">
@@ -325,6 +331,13 @@ export default function Navbar() {
           )}
         </div>
         <div className="pt-4 pb-3 border-t border-gray-700">
+          <Link
+            href="/crisis"
+            className="block px-4 py-2 text-base font-medium text-white bg-red-600 hover:bg-red-700 rounded-md mb-2 text-center"
+            onClick={() => setIsOpen(false)}
+          >
+            Crisis Support
+          </Link>
           {isLoggedIn ? (
             <div className="space-y-2 px-4">
               <div className="text-base font-medium text-gray-200">

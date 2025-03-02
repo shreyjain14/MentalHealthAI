@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getStats } from "@/utils/stats";
 import Navbar from "@/components/Navbar";
 import StatCard from "@/components/StatCard";
-
+import Footer from "@/components/Footer";
 interface StatsData {
   total_count: number;
   by_level: {
@@ -132,39 +132,6 @@ export default function HomePage() {
         </section> */}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-black">
-        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                className="text-primary"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2Z"></path>
-                <path d="M7 9h10"></path>
-                <path d="M12 7v10"></path>
-                <path d="M16 15a2 2 0 0 1-4 0 2 2 0 0 0-4 0"></path>
-              </svg>
-              <span className="ml-2 text-lg font-bold text-white">
-                MindCare
-              </span>
-            </div>
-            <div className="mt-4 md:mt-0">
-              <p className="text-center text-gray-400 text-sm">
-                &copy; {new Date().getFullYear()} MindCare. All rights reserved.
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
