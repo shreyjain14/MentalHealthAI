@@ -16,6 +16,19 @@ logger.add(sys.stderr, level="INFO")
 # Create a context variable to store request ID
 request_id_contextvar = ContextVar("request_id", default=None)
 
+def get_logger(name=None):
+    """
+    Returns a logger instance with the given name.
+    This function is used to provide a consistent logging interface across the application.
+    
+    Args:
+        name: The name of the module using the logger
+        
+    Returns:
+        A logger instance
+    """
+    return logger.bind(module=name)
+
 class DBLogger:
     """Handler for logging to database"""
     

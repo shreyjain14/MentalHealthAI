@@ -90,7 +90,8 @@ export default function DashboardPage() {
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
               Talk to our AI therapist about your feelings and get personalized
-              support and guidance.
+              support and guidance. NOTE: All the chat data is deleted after the
+              chat is closed.
             </p>
             <div className="mt-4">
               <Link
@@ -98,6 +99,80 @@ export default function DashboardPage() {
                 className="inline-block w-full px-4 py-2 bg-pink-600 text-white text-center rounded-md hover:bg-pink-700 transition-colors"
               >
                 Start Chatting
+              </Link>
+            </div>
+          </div>
+
+          {/* COping Card */}
+          <div className="bg-surface rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold text-white mb-4">
+              Coping Methods
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              View coping methods for different mental health conditions or
+              generate your own if you cannot find any you like.
+            </p>
+            <div className="mt-4">
+              <Link
+                href="/coping"
+                className="inline-block w-full px-4 py-2 bg-pink-600 text-white text-center rounded-md hover:bg-pink-700 transition-colors"
+              >
+                View Methods
+              </Link>
+            </div>
+          </div>
+
+          {/* Relaxation Card */}
+          <div className="bg-surface rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold text-white mb-4">
+              Relaxation Techniques
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              View relaxation techniques for different mental health conditions
+              or generate your own if you cannot find any you like.
+            </p>
+            <div className="mt-4">
+              <Link
+                href="/relaxation"
+                className="inline-block w-full px-4 py-2 bg-pink-600 text-white text-center rounded-md hover:bg-pink-700 transition-colors"
+              >
+                View Techniques
+              </Link>
+            </div>
+          </div>
+
+          {/* Mood Histoy Card */}
+          <div className="bg-surface rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold text-white mb-4">
+              Mood History
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              View your mood history and see how your mood has changed over
+              time.
+            </p>
+            <div className="mt-4">
+              <Link
+                href="/mood-history"
+                className="inline-block w-full px-4 py-2 bg-pink-600 text-white text-center rounded-md hover:bg-pink-700 transition-colors"
+              >
+                View History
+              </Link>
+            </div>
+          </div>
+
+          {/* Respurces Card */}
+          <div className="bg-surface rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold text-white mb-4">Resources</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              View resources for different mental health conditions or add new
+              one you think others will find helpful.
+            </p>
+            <div className="mt-4">
+              <Link
+                href="/resources"
+                className="inline-block w-full px-4 py-2 bg-pink-600 text-white text-center rounded-md hover:bg-pink-700 transition-colors"
+              >
+                View Resources
               </Link>
             </div>
           </div>

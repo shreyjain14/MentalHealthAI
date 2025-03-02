@@ -6,11 +6,11 @@ interface MoodPopupProps {
 }
 
 const MOODS = [
-  { value: "great", label: "Great", emoji: "😄" },
-  { value: "good", label: "Good", emoji: "🙂" },
-  { value: "okay", label: "Okay", emoji: "😐" },
-  { value: "bad", label: "Bad", emoji: "😞" },
-  { value: "terrible", label: "Terrible", emoji: "😢" },
+  { value: "Great", label: "Great", emoji: "😄" },
+  { value: "Good", label: "Good", emoji: "🙂" },
+  { value: "Okay", label: "Okay", emoji: "😐" },
+  { value: "Bad", label: "Bad", emoji: "😞" },
+  { value: "Terrible", label: "Terrible", emoji: "😢" },
 ];
 
 const MoodPopup: React.FC<MoodPopupProps> = ({ onClose }) => {

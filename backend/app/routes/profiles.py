@@ -1,12 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import Optional
+from datetime import datetime, timedelta
 
 from app.database import get_db
 from app.models.user import User
 from app.models.user_profile import UserProfile
+from app.models.mood_history import MoodHistory
 from app.schemas.user_profile import UserProfile as UserProfileSchema
 from app.schemas.user_profile import UserProfileCreate, UserProfileUpdate, MoodUpdate
+from app.schemas.mood_history import MoodHistoryList, MoodHistoryResponse
 from app.auth.utils import get_current_active_user
 
 router = APIRouter()
@@ -43,17 +46,42 @@ async def update_user_profile(
         db.add(profile)
         db.commit()
         db.refresh(profile)
+        
+        # Record mood in history if it was set
+        if profile_update.current_mood:
+            mood_history_entry = MoodHistory(
+                user_id=current_user.id,
+                mood=profile_update.current_mood
+            )
+            db.add(mood_history_entry)
+            db.commit()
+        
         return profile
     
     # Update existing profile
     profile = current_user.profile
     profile_data = profile_update.model_dump(exclude_unset=True)
     
+    # Check if mood is being updated
+    mood_updated = False
+    if 'current_mood' in profile_data and profile_data['current_mood'] != profile.current_mood:
+        mood_updated = True
+    
     for key, value in profile_data.items():
         setattr(profile, key, value)
     
     db.commit()
     db.refresh(profile)
+    
+    # Record mood change in history if the mood was updated
+    if mood_updated:
+        mood_history_entry = MoodHistory(
+            user_id=current_user.id,
+            mood=profile.current_mood
+        )
+        db.add(mood_history_entry)
+        db.commit()
+    
     return profile
 
 @router.put("/me/mood", response_model=UserProfileSchema)
@@ -70,12 +98,37 @@ async def update_mood(
         db.add(profile)
         db.commit()
         db.refresh(profile)
-        return profile
+    else:
+        # Update only the mood
+        profile = current_user.profile
+        profile.current_mood = mood_update.current_mood
+        db.commit()
+        db.refresh(profile)
     
-    # Update only the mood
-    profile = current_user.profile
-    profile.current_mood = mood_update.current_mood
-    
+    # Record this mood change in mood history
+    mood_history_entry = MoodHistory(
+        user_id=current_user.id,
+        mood=mood_update.current_mood
+    )
+    db.add(mood_history_entry)
     db.commit()
-    db.refresh(profile)
-    return profile 
+    
+    return profile
+
+@router.get("/me/mood-history", response_model=MoodHistoryList)
+async def get_mood_history(
+    days: int = 7,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """Get the user's mood history for the specified number of days (default: 7 days)"""
+    # Calculate the date threshold
+    cutoff_date = datetime.now() - timedelta(days=days)
+    
+    # Query mood history entries after the cutoff date
+    mood_entries = db.query(MoodHistory).filter(
+        MoodHistory.user_id == current_user.id,
+        MoodHistory.timestamp >= cutoff_date
+    ).order_by(MoodHistory.timestamp.desc()).all()
+    
+    return MoodHistoryList(history=mood_entries) 

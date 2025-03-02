@@ -6,3 +6,12 @@
 .env.development
 .env.test
 websocket_test.html
+.vscode/
+.venv/
+*__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz

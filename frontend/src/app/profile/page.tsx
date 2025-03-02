@@ -54,7 +54,9 @@ export default function ProfilePage() {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -77,6 +79,24 @@ export default function ProfilePage() {
       setError("Failed to save changes. Please try again.");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  // Get background color based on mood
+  const getMoodColor = (mood: string) => {
+    switch (mood) {
+      case "Great":
+        return "bg-green-500";
+      case "Good":
+        return "bg-green-400";
+      case "Okay":
+        return "bg-yellow-400";
+      case "Bad":
+        return "bg-red-400";
+      case "Terrible":
+        return "bg-red-600";
+      default:
+        return "bg-gray-400";
     }
   };
 
@@ -118,14 +138,21 @@ export default function ProfilePage() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Current Mood
                 </label>
-                <input
-                  type="text"
+                <select
                   name="current_mood"
                   value={formData.current_mood}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-gray-800 text-white"
-                  placeholder="How are you feeling today?"
-                />
+                >
+                  <option value="" disabled>
+                    Select your current mood
+                  </option>
+                  <option value="Great">Great</option>
+                  <option value="Good">Good</option>
+                  <option value="Okay">Okay</option>
+                  <option value="Bad">Bad</option>
+                  <option value="Terrible">Terrible</option>
+                </select>
               </div>
 
               <div>
@@ -218,9 +245,20 @@ export default function ProfilePage() {
                 <h2 className="text-lg font-semibold text-white mb-2">
                   Current Mood
                 </h2>
-                <p className="text-gray-300 bg-gray-800 p-3 rounded-md">
-                  {profile?.current_mood || "No mood set"}
-                </p>
+                <div className="flex items-center text-gray-300 bg-gray-800 p-3 rounded-md">
+                  {profile?.current_mood ? (
+                    <>
+                      <div
+                        className={`w-4 h-4 rounded-full mr-3 ${getMoodColor(
+                          profile.current_mood
+                        )}`}
+                      ></div>
+                      <span>{profile.current_mood}</span>
+                    </>
+                  ) : (
+                    "No mood set"
+                  )}
+                </div>
               </div>
 
               <div>

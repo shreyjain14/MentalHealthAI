@@ -2,8 +2,11 @@ import { getAccessToken } from './auth';
 
 const API_BASE_URL = 'http://localhost:8000/api';
 
+// Define the possible mood values
+export type MoodType = 'Great' | 'Good' | 'Okay' | 'Bad' | 'Terrible' | '';
+
 export interface UserProfile {
-  current_mood: string;
+  current_mood: MoodType;
   primary_concerns: string;
   coping_strategies: string;
   id?: number;
