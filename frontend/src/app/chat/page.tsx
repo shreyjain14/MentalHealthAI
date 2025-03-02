@@ -4,6 +4,8 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { isAuthenticated, getAccessToken } from "@/utils/auth";
 import Navbar from "@/components/Navbar";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 type MessagePart = {
   type: "text" | "thinking";
@@ -354,31 +356,32 @@ export default function ChatPage() {
                   message.sender === "user"
                     ? "bg-pink-600 bg-opacity-20 ml-12 text-right"
                     : "bg-gray-800 mr-12"
-                } ${
-                  message.isStreaming ? "animate-pulse-border relative" : ""
-                }`}
+                } ${message.isStreaming ? "animate-pulse-border relative" : ""}`}
               >
                 <strong className="font-semibold">
                   {message.sender === "user" ? "You" : "AI"}:
                 </strong>
-                <div className="ml-1 whitespace-pre-wrap">
+                <div className={`ml-1 whitespace-pre-wrap ${message.sender === "user" ? "text-right" : "text-left"}`}>
                   {message.sender === "ai" && hasThinking ? (
                     parts.map((part, index) => {
                       if (part.type === "text") {
-                        return <span key={index}>{part.content}</span>;
+                        return (
+                          <div key={index} className="prose prose-invert max-w-none">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                              {part.content}
+                            </ReactMarkdown>
+                          </div>
+                        );
                       }
 
                       // This is a thinking part - it should be collapsed by default
-                      const isExpanded =
-                        message.expandedThinking?.[index] ?? false;
+                      const isExpanded = message.expandedThinking?.[index] ?? false;
 
                       return (
                         <div key={index} className="my-1">
                           <button
                             onClick={() => {
-                              const newExpanded = [
-                                ...(message.expandedThinking || []),
-                              ];
+                              const newExpanded = [...(message.expandedThinking || [])];
                               newExpanded[index] = !isExpanded;
                               setMessages((prev) =>
                                 prev.map((msg) =>
@@ -402,19 +405,20 @@ export default function ChatPage() {
                     })
                   ) : (
                     <>
-                      {message.sender === "ai"
-                        ? // For AI messages, always parse and filter out thinking tags
-                          parseThinkingContent(message.content)
-                            .filter((part) => part.type === "text")
-                            .map((part, index) => (
-                              <span key={index}>{part.content}</span>
-                            ))
-                        : // For user messages, display content as is
-                          message.content}
+                      {message.sender === "ai" ? (
+                        <div className="prose prose-invert max-w-none">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {parseThinkingContent(message.content)
+                              .filter((part) => part.type === "text")
+                              .map((part) => part.content)
+                              .join("")}
+                          </ReactMarkdown>
+                        </div>
+                      ) : (
+                        message.content
+                      )}
                       {message.isStreaming && (
-                        <span className="inline-block ml-1 animate-pulse">
-                          ▌
-                        </span>
+                        <span className="inline-block ml-1 animate-pulse">▌</span>
                       )}
                     </>
                   )}
@@ -422,7 +426,6 @@ export default function ChatPage() {
               </div>
             );
           })}
-
           <div ref={messagesEndRef} />
         </div>
 
