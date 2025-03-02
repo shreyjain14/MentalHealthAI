@@ -55,28 +55,30 @@ export default function DashboardPage() {
       {showMoodPopup && <MoodPopup onClose={handleCloseMoodPopup} />}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-surface rounded-lg shadow-md p-6 mb-6">
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg shadow-xl p-6 mb-8 border border-gray-700/50">
           <h1 className="text-2xl font-bold text-white mb-4">Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-gray-300">
             Welcome back, {username}! This is your MindCare dashboard. Here you
             can access all your mental health resources.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Profile Card */}
-          <div className="bg-surface rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-white mb-4">
-              Your Profile
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              View and edit your personal information, preferences, and mental
-              health profile.
-            </p>
-            <div className="mt-4">
+          <div className="group bg-gray-800/30 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700/50 hover:border-primary/50 hover:bg-gray-800/50 transition-all duration-300 flex flex-col">
+            <div className="p-6 flex-grow">
+              <h2 className="text-xl font-semibold text-white mb-4 group-hover:text-primary-light transition-colors">
+                Your Profile
+              </h2>
+              <p className="text-gray-300">
+                View and edit your personal information, preferences, and mental
+                health profile.
+              </p>
+            </div>
+            <div className="p-6 pt-0">
               <Link
                 href="/profile"
-                className="inline-block w-full px-4 py-2 bg-pink-600 text-white text-center rounded-md hover:bg-pink-700 transition-colors"
+                className="inline-block w-full px-4 py-3 bg-pink-400/80 text-white text-center rounded-md hover:bg-pink-500 active:bg-pink-600 transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-pink-500/25"
               >
                 Go to Profile
               </Link>
@@ -84,38 +86,61 @@ export default function DashboardPage() {
           </div>
 
           {/* Chat Bot Card */}
-          <div className="bg-surface rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-white mb-4">
-              AI Therapy Chat
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              Talk to our AI therapist about your feelings and get personalized
-              support and guidance. NOTE: All the chat data is deleted after the
-              chat is closed.
-            </p>
-            <div className="mt-4">
+          <div className="group bg-gray-800/30 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700/50 hover:border-primary/50 hover:bg-gray-800/50 transition-all duration-300 flex flex-col">
+            <div className="p-6 flex-grow">
+              <h2 className="text-xl font-semibold text-white mb-4 group-hover:text-primary-light transition-colors">
+                AI Therapy Chat
+              </h2>
+              <p className="text-gray-300">
+                Talk to our AI therapist about your feelings and get personalized
+                support and guidance.
+              </p>
+            </div>
+            <div className="p-6 pt-0">
               <Link
                 href="/chat"
-                className="inline-block w-full px-4 py-2 bg-pink-600 text-white text-center rounded-md hover:bg-pink-700 transition-colors"
+                className="inline-block w-full px-4 py-3 bg-pink-400/80 text-white text-center rounded-md hover:bg-pink-500 active:bg-pink-600 transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-pink-500/25"
               >
                 Start Chatting
               </Link>
             </div>
           </div>
 
-          {/* COping Card */}
-          <div className="bg-surface rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-white mb-4">
-              Coping Methods
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              View coping methods for different mental health conditions or
-              generate your own if you cannot find any you like.
-            </p>
-            <div className="mt-4">
+          {/* Sound Therapy Card */}
+          <div className="group bg-gray-800/30 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700/50 hover:border-primary/50 hover:bg-gray-800/50 transition-all duration-300 flex flex-col">
+            <div className="p-6 flex-grow">
+              <h2 className="text-xl font-semibold text-white mb-4 group-hover:text-primary-light transition-colors">
+                Sound Therapy
+              </h2>
+              <p className="text-gray-300">
+                Relax and focus with ambient sounds, including nature sounds, white noise, and meditation bells.
+              </p>
+            </div>
+            <div className="p-6 pt-0">
+              <Link
+                href="/sound-therapy"
+                className="inline-block w-full px-4 py-3 bg-pink-400/80 text-white text-center rounded-md hover:bg-pink-500 active:bg-pink-600 transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-pink-500/25"
+              >
+                Open Sound Therapy
+              </Link>
+            </div>
+          </div>
+
+          {/* Coping Methods Card */}
+          <div className="group bg-gray-800/30 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700/50 hover:border-primary/50 hover:bg-gray-800/50 transition-all duration-300 flex flex-col">
+            <div className="p-6 flex-grow">
+              <h2 className="text-xl font-semibold text-white mb-4 group-hover:text-primary-light transition-colors">
+                Coping Methods
+              </h2>
+              <p className="text-gray-300">
+                View coping methods for different mental health conditions or
+                generate your own if you cannot find any you like.
+              </p>
+            </div>
+            <div className="p-6 pt-0">
               <Link
                 href="/coping"
-                className="inline-block w-full px-4 py-2 bg-pink-600 text-white text-center rounded-md hover:bg-pink-700 transition-colors"
+                className="inline-block w-full px-4 py-3 bg-pink-400/80 text-white text-center rounded-md hover:bg-pink-500 active:bg-pink-600 transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-pink-500/25"
               >
                 View Methods
               </Link>
@@ -123,54 +148,62 @@ export default function DashboardPage() {
           </div>
 
           {/* Relaxation Card */}
-          <div className="bg-surface rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-white mb-4">
-              Relaxation Techniques
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              View relaxation techniques for different mental health conditions
-              or generate your own if you cannot find any you like.
-            </p>
-            <div className="mt-4">
+          <div className="group bg-gray-800/30 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700/50 hover:border-primary/50 hover:bg-gray-800/50 transition-all duration-300 flex flex-col">
+            <div className="p-6 flex-grow">
+              <h2 className="text-xl font-semibold text-white mb-4 group-hover:text-primary-light transition-colors">
+                Relaxation Techniques
+              </h2>
+              <p className="text-gray-300">
+                View relaxation techniques for different mental health conditions
+                or generate your own if you cannot find any you like.
+              </p>
+            </div>
+            <div className="p-6 pt-0">
               <Link
                 href="/relaxation"
-                className="inline-block w-full px-4 py-2 bg-pink-600 text-white text-center rounded-md hover:bg-pink-700 transition-colors"
+                className="inline-block w-full px-4 py-3 bg-pink-400/80 text-white text-center rounded-md hover:bg-pink-500 active:bg-pink-600 transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-pink-500/25"
               >
                 View Techniques
               </Link>
             </div>
           </div>
 
-          {/* Mood Histoy Card */}
-          <div className="bg-surface rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-white mb-4">
-              Mood History
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              View your mood history and see how your mood has changed over
-              time.
-            </p>
-            <div className="mt-4">
+          {/* Mood History Card */}
+          <div className="group bg-gray-800/30 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700/50 hover:border-primary/50 hover:bg-gray-800/50 transition-all duration-300 flex flex-col">
+            <div className="p-6 flex-grow">
+              <h2 className="text-xl font-semibold text-white mb-4 group-hover:text-primary-light transition-colors">
+                Mood History
+              </h2>
+              <p className="text-gray-300">
+                View your mood history and see how your mood has changed over
+                time.
+              </p>
+            </div>
+            <div className="p-6 pt-0">
               <Link
                 href="/mood-history"
-                className="inline-block w-full px-4 py-2 bg-pink-600 text-white text-center rounded-md hover:bg-pink-700 transition-colors"
+                className="inline-block w-full px-4 py-3 bg-pink-400/80 text-white text-center rounded-md hover:bg-pink-500 active:bg-pink-600 transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-pink-500/25"
               >
                 View History
               </Link>
             </div>
           </div>
 
-          {/* Respurces Card */}
-          <div className="bg-surface rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-white mb-4">Resources</h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              View resources for different mental health conditions or add new
-              one you think others will find helpful.
-            </p>
-            <div className="mt-4">
+          {/* Resources Card */}
+          <div className="group bg-gray-800/30 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700/50 hover:border-primary/50 hover:bg-gray-800/50 transition-all duration-300 flex flex-col">
+            <div className="p-6 flex-grow">
+              <h2 className="text-xl font-semibold text-white mb-4 group-hover:text-primary-light transition-colors">
+                Resources
+              </h2>
+              <p className="text-gray-300">
+                View resources for different mental health conditions or add new
+                ones you think others will find helpful.
+              </p>
+            </div>
+            <div className="p-6 pt-0">
               <Link
                 href="/resources"
-                className="inline-block w-full px-4 py-2 bg-pink-600 text-white text-center rounded-md hover:bg-pink-700 transition-colors"
+                className="inline-block w-full px-4 py-3 bg-pink-400/80 text-white text-center rounded-md hover:bg-pink-500 active:bg-pink-600 transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-pink-500/25"
               >
                 View Resources
               </Link>
